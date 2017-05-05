@@ -38,7 +38,8 @@ public class LocationServiceActivity extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        intent = new Intent(BROADCAST_ACTION);
+        intent = new Intent(this, MenuActivity.class);
+        this.startService(intent);
         isMyServiceRunning(LocationServiceActivity.class);
         myDB = new TrackerDatabase(this);
 

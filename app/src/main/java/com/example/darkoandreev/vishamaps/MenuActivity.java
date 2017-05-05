@@ -72,7 +72,7 @@ public class MenuActivity extends AppCompatActivity {
         stopTrackingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stopService(mIntent);
+                stopService(new Intent(MenuActivity.this, LocationServiceActivity.class));
             }
         });
     }
