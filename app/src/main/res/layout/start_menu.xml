@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark">
+
+
+    <Button
+        android:id="@+id/start_tracking"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Start tracking"
+        android:layout_marginTop="50dp"
+        android:background="#F08080"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/map_view"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="View map"
+        android:layout_marginTop="50dp"
+        android:background="#008000"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/stop_tracking"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Stop tracking"
+        android:layout_marginTop="50dp"
+        android:background="#FFF0"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/show_database"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Show database"
+        android:layout_marginTop="50dp"
+        android:background="#800080"
+        android:textStyle="bold"/>
+
+</LinearLayout>
