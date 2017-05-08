@@ -1,8 +1,10 @@
 package com.example.darkoandreev.vishamaps;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -83,11 +85,42 @@ public class MenuActivity extends AppCompatActivity {
         showDatabase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LocationServiceActivity lsa = new LocationServiceActivity();
-                lsa.my.viewAll();
+                viewAll();
             }
         });
 
+    }
+
+    public void viewAll() {
+
+        Cursor res = myDB.getAllData();
+        if (res.getCount() == 0) {
+
+            showMessage("Error", "Nothing found");
+            return;
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        while (res.moveToNext()) {
+
+            buffer.append("Id: " + res.getString(0) + "\n");
+            buffer.append("Speed: " + res.getString(1) + "\n");
+            buffer.append("Latitude: " + res.getString(2) + "\n");
+            buffer.append("Longitude: " + res.getString(3) + "\n");
+            buffer.append("Time: " + res.getString(4) + "\n\n");
+
+        }
+
+        showMessage("Tracker Database", buffer.toString());
+    }
+
+
+    public void showMessage(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.show();
     }
 
 

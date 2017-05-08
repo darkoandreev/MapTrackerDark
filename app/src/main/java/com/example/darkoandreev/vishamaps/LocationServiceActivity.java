@@ -46,7 +46,6 @@ public class LocationServiceActivity extends Service {
     }
 
 
-
     public int onStartCommand(Intent intent, int flags, int startId) {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         listener = new MyLocationListener();
@@ -64,7 +63,6 @@ public class LocationServiceActivity extends Service {
     }
 
 
-
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -75,9 +73,9 @@ public class LocationServiceActivity extends Service {
         return false;
     }
 
+
     @Override
-    public IBinder onBind(Intent intent)
-    {
+    public IBinder onBind(Intent intent) {
         return null;
     }
 
@@ -124,8 +122,9 @@ public class LocationServiceActivity extends Service {
     }
 
 
-
-    /** Checks whether two providers are the same */
+    /**
+     * Checks whether two providers are the same
+     */
     private boolean isSameProvider(String provider1, String provider2) {
         if (provider1 == null) {
             return provider2 == null;
@@ -134,45 +133,22 @@ public class LocationServiceActivity extends Service {
     }
 
 
-
     @Override
     public void onDestroy() {
         //handler.removeCallbacks(sendUpdatesToUI);
         super.onDestroy();
         Log.v("STOP_SERVICE", "DONE");
         locationManager.removeUpdates(listener);
-
-        if(intent != null) {
-            stopService(intent);
-        }
+        Toast.makeText(this, "Stopping service", Toast.LENGTH_SHORT).show();
     }
-
-    public static Thread performOnBackgroundThread(final Runnable runnable) {
-        final Thread t = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    runnable.run();
-                } finally {
-
-                }
-            }
-        };
-        t.start();
-        return t;
-    }
-
-
-
 
     public class MyLocationListener implements LocationListener {
 
 
-        public void onLocationChanged(final Location loc)
-        {
-            double speed = (double) (loc.getSpeed()*3600/1000);
+        public void onLocationChanged(final Location loc) {
+            double speed = (double) (loc.getSpeed() * 3600 / 1000);
             Log.i("************", "Location changed");
-            if(isBetterLocation(loc, previousBestLocation)) {
+            if (isBetterLocation(loc, previousBestLocation)) {
                 loc.getLatitude();
                 loc.getLongitude();
                 intent.putExtra("Latitude", loc.getLatitude());
@@ -189,8 +165,8 @@ public class LocationServiceActivity extends Service {
                 Toast.makeText(LocationServiceActivity.this, "Location changed", Toast.LENGTH_LONG).show();
 
 
-                boolean isInserted =  myDB.insertData(String.valueOf(speed), loc.getLatitude(), loc.getLongitude(), String.valueOf(System.currentTimeMillis()));
-                if(isInserted == true) {
+                boolean isInserted = myDB.insertData(String.valueOf(speed), loc.getLatitude(), loc.getLongitude(), String.valueOf(System.currentTimeMillis()));
+                if (isInserted == true) {
                     Toast.makeText(LocationServiceActivity.this, "Data inserted", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(LocationServiceActivity.this, "Data is NOT inserted", Toast.LENGTH_LONG).show();
@@ -198,57 +174,51 @@ public class LocationServiceActivity extends Service {
             }
         }
 
-
-
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
 
         }
 
-        public void onProviderDisabled(String provider)
-        {
-            Toast.makeText( getApplicationContext(), "Gps Disabled", Toast.LENGTH_SHORT ).show();
+        public void onProviderDisabled(String provider) {
+            Toast.makeText(getApplicationContext(), "Gps Disabled", Toast.LENGTH_SHORT).show();
         }
 
 
-        public void onProviderEnabled(String provider)
-        {
-            Toast.makeText( getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
+        public void onProviderEnabled(String provider) {
+            Toast.makeText(getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
         }
 
-        public void viewAll () {
+        public void viewAll() {
 
-                    Cursor res = myDB.getAllData();
-                    if(res.getCount() == 0) {
+            Cursor res = myDB.getAllData();
+            if (res.getCount() == 0) {
 
-                        showMessage("Error", "Nothing found");
-                        return;
-                    }
+                showMessage("Error", "Nothing found");
+                return;
+            }
 
-                    StringBuffer buffer = new StringBuffer();
-                    while (res.moveToNext()) {
+            StringBuffer buffer = new StringBuffer();
+            while (res.moveToNext()) {
 
-                        buffer.append("Id: " + res.getString(0) + "\n");
-                        buffer.append("Speed: " + res.getString(1) + "\n");
-                        buffer.append("Latitude: " + res.getString(2) + "\n");
-                        buffer.append("Longitude: " + res.getString(3) + "\n");
-                        buffer.append("Time: " + res.getString(4) + "\n\n");
+                buffer.append("Id: " + res.getString(0) + "\n");
+                buffer.append("Speed: " + res.getString(1) + "\n");
+                buffer.append("Latitude: " + res.getString(2) + "\n");
+                buffer.append("Longitude: " + res.getString(3) + "\n");
+                buffer.append("Time: " + res.getString(4) + "\n\n");
 
-                    }
+            }
 
-                    showMessage("Tracker Database", buffer.toString());
-                }
+            showMessage("Tracker Database", buffer.toString());
+        }
 
 
-
-        public void showMessage (String title, String message) {
+        public void showMessage(String title, String message) {
             AlertDialog.Builder builder = new AlertDialog.Builder(LocationServiceActivity.this);
             builder.setCancelable(true);
             builder.setTitle(title);
             builder.setMessage(message);
             builder.show();
         }
-
 
 
     }
