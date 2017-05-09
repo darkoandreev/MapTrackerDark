@@ -17,7 +17,7 @@ public class TrackerDatabase extends SQLiteOpenHelper {
     public static String SPEED = "SPEED";
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";
-    public static final String id = "ID";
+    public static final String ID = "ID";
     public static final String TIME = "time";
     public static final String DATABASE_NAME = "newTrackerDatabase";
     public static final String TABLE_NAME = "newTrackerTable";
@@ -75,9 +75,8 @@ public class TrackerDatabase extends SQLiteOpenHelper {
 
     public Cursor getLatLng() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.query(TABLE_NAME, new String[]{
-                        "latitude", "longitude"}, null, null,
-                null, null, null);
+        String [] columns = new String [] {LATITUDE, LONGITUDE};
+        Cursor res = db.query(TABLE_NAME, columns, null, null, null, null, null);
 
         return res;
     }

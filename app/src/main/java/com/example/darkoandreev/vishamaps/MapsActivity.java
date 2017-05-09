@@ -26,8 +26,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -53,7 +51,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     TextView showSpeed;
     TrackerDatabase myDB;
     Button showDb;
-    Circle circle;
+
 
 
 
@@ -77,6 +75,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         points = new ArrayList<LatLng>();
 
 
+
         if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()) {
             requestPermissions(PERMISSIONS, PERMISSION_ALL);
             requestLocation();
@@ -92,15 +91,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         marker = mMap.addMarker(mo);
+
     }
 
     @Override
     public void onLocationChanged(Location location) {
         LatLng myCoordinates = new LatLng(location.getLatitude(), location.getLongitude());
         points.add(myCoordinates);
-        redrawLine();
-
-
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myCoordinates, 15));
         mMap.animateCamera(CameraUpdateFactory.zoomIn());
@@ -108,12 +105,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         marker.setPosition(myCoordinates);
 
-        circle = mMap.addCircle(new CircleOptions()
-                .center(myCoordinates)
-                .radius(10)
-                .strokeColor(Color.RED)
-                .fillColor(Color.BLUE)
-                .strokeWidth(4.0f));
+        redrawLine();
 
         final double distance = SphericalUtil.computeLength(points);
         String DISTANCE = String.valueOf(distance);
@@ -154,20 +146,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void redrawLine(){
 
         //mMap.clear();  //clears all Markers and Polylines
-
+        points = new ArrayList<LatLng>();
         Cursor locationCursor = myDB.getLatLng();
         locationCursor.moveToFirst();
+        Log.v("CURSOR----", locationCursor.toString());
 
         do {
-            int latitude = (int) (locationCursor.getDouble(locationCursor
-                    .getColumnIndex("latitude")) * 1E6);
-            int longitude = (int) (locationCursor.getDouble(locationCursor
-                    .getColumnIndex("longitude")) * 1E6);
+
+            Double latitude =  (locationCursor.getDouble(locationCursor
+                    .getColumnIndex("LATITUDE")));
+            Log.v("Latitude from db----", String.valueOf(latitude));
+            Double longitude =  (locationCursor.getDouble(locationCursor
+                    .getColumnIndex("LONGITUDE")));
+            Log.v("Longitude from db----", String.valueOf(longitude));
 
             points.add(new LatLng(latitude, longitude));
+            Log.v("POINTS------", String.valueOf(points));
         } while (locationCursor.moveToNext());
-
         PolylineOptions options = new PolylineOptions().width(5).color(Color.RED).geodesic(true);
+
         for (int i = 0; i < points.size(); i++) {
             LatLng point = points.get(i);
             options.add(point);
