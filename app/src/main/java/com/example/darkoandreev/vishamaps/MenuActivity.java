@@ -110,7 +110,7 @@ public class MenuActivity extends AppCompatActivity {
         Cursor res = myDB.getAllData();
         if (res.getCount() == 0) {
 
-            showMessage("Error", "Nothing found");
+            showMessage("Errorr", "Nothing found");
             return;
         }
 
