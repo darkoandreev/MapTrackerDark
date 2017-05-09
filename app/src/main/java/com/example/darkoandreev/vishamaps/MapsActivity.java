@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
@@ -25,6 +26,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -50,6 +53,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     TextView showSpeed;
     TrackerDatabase myDB;
     Button showDb;
+    Circle circle;
 
 
 
@@ -104,6 +108,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         marker.setPosition(myCoordinates);
 
+        circle = mMap.addCircle(new CircleOptions()
+                .center(myCoordinates)
+                .radius(10)
+                .strokeColor(Color.RED)
+                .fillColor(Color.BLUE)
+                .strokeWidth(4.0f));
+
         final double distance = SphericalUtil.computeLength(points);
         String DISTANCE = String.valueOf(distance);
 
@@ -143,6 +154,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void redrawLine(){
 
         //mMap.clear();  //clears all Markers and Polylines
+
+        Cursor locationCursor = myDB.getLatLng();
+        locationCursor.moveToFirst();
+
+        do {
+            int latitude = (int) (locationCursor.getDouble(locationCursor
+                    .getColumnIndex("latitude")) * 1E6);
+            int longitude = (int) (locationCursor.getDouble(locationCursor
+                    .getColumnIndex("longitude")) * 1E6);
+
+            points.add(new LatLng(latitude, longitude));
+        } while (locationCursor.moveToNext());
 
         PolylineOptions options = new PolylineOptions().width(5).color(Color.RED).geodesic(true);
         for (int i = 0; i < points.size(); i++) {

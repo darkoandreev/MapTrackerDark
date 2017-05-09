@@ -58,17 +58,26 @@ public class TrackerDatabase extends SQLiteOpenHelper {
         cv.put(TIME, time);
 
 
-      long result = db.insert(TABLE_NAME, null, cv);
+        long result = db.insert(TABLE_NAME, null, cv);
 
-        if(result == -1)
+        if (result == -1)
             return false;
         else
             return true;
     }
 
-    public Cursor getAllData () {
+    public Cursor getAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+
+        return res;
+    }
+
+    public Cursor getLatLng() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.query(TABLE_NAME, new String[]{
+                        "latitude", "longitude"}, null, null,
+                null, null, null);
 
         return res;
     }

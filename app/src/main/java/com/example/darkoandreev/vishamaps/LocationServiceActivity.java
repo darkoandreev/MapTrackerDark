@@ -133,7 +133,6 @@ public class LocationServiceActivity extends Service {
 
     @Override
     public void onDestroy() {
-        //handler.removeCallbacks(sendUpdatesToUI);
         super.onDestroy();
         Log.v("STOP_SERVICE", "DONE");
         locationManager.removeUpdates(listener);

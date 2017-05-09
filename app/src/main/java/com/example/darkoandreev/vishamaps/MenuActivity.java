@@ -98,7 +98,6 @@ public class MenuActivity extends AppCompatActivity {
         deleteDatabase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                     myDB.deleteAll();
                     Toast.makeText(MenuActivity.this, "Records are deleted", Toast.LENGTH_SHORT).show();
             }
@@ -136,6 +135,5 @@ public class MenuActivity extends AppCompatActivity {
         builder.setMessage(message);
         builder.show();
     }
-
 
 }
