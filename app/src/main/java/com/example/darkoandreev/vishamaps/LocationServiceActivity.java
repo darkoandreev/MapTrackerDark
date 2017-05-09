@@ -6,7 +6,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -14,9 +13,11 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by darko.andreev on 5/3/2017.
@@ -158,14 +159,18 @@ public class LocationServiceActivity extends Service {
                 intent.putExtra("Provider", loc.getProvider());
                 intent.putExtra("Speed", speed);
                 Log.i(String.valueOf(speed) + " km/h", "Speed");
-                intent.putExtra("Time", System.currentTimeMillis());
-                Log.i(String.valueOf(System.currentTimeMillis()), "Time");
+
+                long yourmilliseconds = System.currentTimeMillis();
+                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm:ss");
+                Date resultdate = new Date(yourmilliseconds);
+                intent.putExtra("Time", sdf.format(resultdate));
+                Log.i(String.valueOf(sdf.format(resultdate)), "Time");
                 sendBroadcast(intent);
 
                 Toast.makeText(LocationServiceActivity.this, "Location changed", Toast.LENGTH_LONG).show();
 
 
-                boolean isInserted = myDB.insertData(String.valueOf(speed), loc.getLatitude(), loc.getLongitude(), String.valueOf(System.currentTimeMillis()));
+                boolean isInserted = myDB.insertData(String.valueOf(speed), loc.getLatitude(), loc.getLongitude(), String.valueOf(sdf.format(resultdate)));
                 if (isInserted == true) {
                     Toast.makeText(LocationServiceActivity.this, "Data inserted", Toast.LENGTH_LONG).show();
                 } else {
@@ -188,37 +193,6 @@ public class LocationServiceActivity extends Service {
             Toast.makeText(getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
         }
 
-        public void viewAll() {
-
-            Cursor res = myDB.getAllData();
-            if (res.getCount() == 0) {
-
-                showMessage("Error", "Nothing found");
-                return;
-            }
-
-            StringBuffer buffer = new StringBuffer();
-            while (res.moveToNext()) {
-
-                buffer.append("Id: " + res.getString(0) + "\n");
-                buffer.append("Speed: " + res.getString(1) + "\n");
-                buffer.append("Latitude: " + res.getString(2) + "\n");
-                buffer.append("Longitude: " + res.getString(3) + "\n");
-                buffer.append("Time: " + res.getString(4) + "\n\n");
-
-            }
-
-            showMessage("Tracker Database", buffer.toString());
-        }
-
-
-        public void showMessage(String title, String message) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(LocationServiceActivity.this);
-            builder.setCancelable(true);
-            builder.setTitle(title);
-            builder.setMessage(message);
-            builder.show();
-        }
 
 
     }

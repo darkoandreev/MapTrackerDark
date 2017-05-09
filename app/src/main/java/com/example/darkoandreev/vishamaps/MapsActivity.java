@@ -72,8 +72,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         points = new ArrayList<LatLng>();
 
-       // viewAll();
-
 
         if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()) {
             requestPermissions(PERMISSIONS, PERMISSION_ALL);
@@ -82,40 +80,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (!isLocationEnabled())
             showAlert(1);
 
-    }
-    /*
-    public void viewAll () {
-        showDb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               Cursor res = myDB.getAllData();
-                if(res.getCount() == 0) {
-
-                    showMessage("Error", "Nothing found");
-                    return;
-                }
-
-                StringBuffer buffer = new StringBuffer();
-                while (res.moveToNext()) {
-
-                    buffer.append("Id: " + res.getString(0) + "\n");
-                    buffer.append(res.getString(1) + "\n");
-                    buffer.append("Speed: " + res.getString(2) + "\n\n");
-
-                }
-
-                showMessage("Tracker Database", buffer.toString());
-            }
-        });
-    }
-    */
-
-    public void showMessage (String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.show();
     }
 
 
@@ -272,25 +236,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     });
             dialog.show();
         }
-
-    protected float calculateMiles() {
-        float totalDistance = 0;
-
-        for(int i = 1; i < points.size(); i++) {
-            Location currLocation = new Location("this");
-            currLocation.setLatitude(points.get(i).latitude);
-            currLocation.setLongitude(points.get(i).longitude);
-
-            Location lastLocation = new Location("this");
-            currLocation.setLatitude(points.get(i-1).latitude);
-            currLocation.setLongitude(points.get(i-1).longitude);
-
-            totalDistance += lastLocation.distanceTo(currLocation);
-
-
-        }
-
-        return totalDistance;
-    }
 
 }
