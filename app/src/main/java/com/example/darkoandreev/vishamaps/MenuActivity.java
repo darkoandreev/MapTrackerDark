@@ -20,6 +20,7 @@ public class MenuActivity extends AppCompatActivity {
     private Button stopTrackingButton;
     private Button startTrackingButton;
     private Button showDatabase;
+    private Button deleteDatabase;
     TrackerDatabase myDB;
     Intent mIntent;
 
@@ -33,6 +34,7 @@ public class MenuActivity extends AppCompatActivity {
         startTrackingActivity();
         stopTracking();
         viewAllFromDb();
+        deleteAllFromDb();
     }
 
     public void openActivity() {
@@ -58,10 +60,9 @@ public class MenuActivity extends AppCompatActivity {
                 mIntent = new Intent(MenuActivity.this, LocationServiceActivity.class);
                 Bundle extras = mIntent.getExtras();
                 Bundle mBundle = new Bundle();
-                //mBundle.extras.putString(key, value);
                 mIntent.putExtras(mBundle);
                 startService(mIntent);
-                Toast.makeText(MenuActivity.this, "Started", Toast.LENGTH_LONG).show();
+                Toast.makeText(MenuActivity.this, "Started", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -89,6 +90,19 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void deleteAllFromDb () {
+        deleteDatabase = (Button) findViewById(R.id.clear_database);
+
+        deleteDatabase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                    myDB.deleteAll();
+                    Toast.makeText(MenuActivity.this, "Records are deleted", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void viewAll() {

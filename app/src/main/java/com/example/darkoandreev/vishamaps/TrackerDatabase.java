@@ -23,7 +23,7 @@ public class TrackerDatabase extends SQLiteOpenHelper {
     public static final String TABLE_NAME = "newTrackerTable";
 
     public static final int DATABASE_VERSION = 1;
-    public static final String CREATE_QUERY = "CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, SPEED DOUBLE, LATITUDE DOUBLE, LONGITUDE DOUBLE, TIME TEXT);";
+    public static final String CREATE_QUERY = "CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, SPEED DOUBLE, LATITUDE DOUBLE, LONGITUDE DOUBLE, TIME TEXT);";
 
     public TrackerDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -71,6 +71,14 @@ public class TrackerDatabase extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
 
         return res;
+    }
+
+    public void deleteAll()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from sqlite_sequence where name = 'newTrackerTable'");
+        db.execSQL("delete from " + TABLE_NAME);
+        db.close();
     }
 
 

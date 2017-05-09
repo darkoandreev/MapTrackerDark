@@ -45,4 +45,14 @@
         android:background="#800080"
         android:textStyle="bold"/>
 
+    <Button
+        android:id="@+id/clear_database"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Clear database"
+        android:layout_marginTop="50dp"
+        android:background="#DA180D"
+        android:textStyle="bold"/>
+
 </LinearLayout>

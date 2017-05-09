@@ -33,8 +33,6 @@ public class LocationServiceActivity extends Service {
     TrackerDatabase myDB;
     Intent intent;
 
-    MyLocationListener my = new MyLocationListener();
-
 
     @Override
     public void onCreate() {
@@ -58,7 +56,6 @@ public class LocationServiceActivity extends Service {
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setPowerRequirement(Criteria.POWER_HIGH);
         String provider = locationManager.getBestProvider(criteria, true);
-        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 4000, 0, listener);
         locationManager.requestLocationUpdates(provider, 4000, 10, listener);
         return Service.START_STICKY;
     }
@@ -192,8 +189,6 @@ public class LocationServiceActivity extends Service {
         public void onProviderEnabled(String provider) {
             Toast.makeText(getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
         }
-
-
 
     }
 }
