@@ -99,16 +99,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         marker = mMap.addMarker(mo);
 
         //New CODE To ADD POLYLINES
-        Polyline lines = mMap.addPolyline(new PolylineOptions().width(3).color(Color.RED));
+        final Polyline lines = mMap.addPolyline(new PolylineOptions().width(3).color(Color.RED));
         lines.setPoints(pointsFromDB);
+
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng clickCoords) {
                 Log.e("TAG", "Found @ " + clickCoords.latitude + " " + clickCoords.longitude);
-                Toast.makeText(MapsActivity.this, "Latitude: " + clickCoords.latitude + "\n" + "Longitude: " + clickCoords.longitude, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MapsActivity.this, "Latitude: " + clickCoords.latitude + "\n" + "Longitude: " + clickCoords.longitude, Toast.LENGTH_LONG).show();
             }
         });
+
+
+
     }
 
     @Override
@@ -126,7 +130,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String DISTANCE = String.valueOf(distance);
 
         Button calcuate = (Button) findViewById(R.id.btnCalculate);
-
 
         calcuate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,7 +192,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void requestLocation() {
         Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_HIGH);
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setPowerRequirement(Criteria.POWER_HIGH);
         String provider = locationManager.getBestProvider(criteria, true);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

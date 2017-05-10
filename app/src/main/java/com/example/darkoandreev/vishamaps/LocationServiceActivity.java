@@ -25,7 +25,6 @@ import java.util.Date;
 
 public class LocationServiceActivity extends Service {
 
-    public static final String BROADCAST_ACTION = "Hello World";
     private static final int TWO_MINUTES = 1000 * 60 * 2;
     public LocationManager locationManager;
     public MyLocationListener listener;
@@ -117,7 +116,7 @@ public class LocationServiceActivity extends Service {
             return true;
         }
         return false;
-    }
+}
 
 
     /**
@@ -188,6 +187,8 @@ public class LocationServiceActivity extends Service {
         public void onProviderEnabled(String provider) {
             Toast.makeText(getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
         }
+
+
 
     }
 }

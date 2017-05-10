@@ -89,7 +89,6 @@ public class MenuActivity extends AppCompatActivity {
                 mIntent.putExtras(mBundle);
                 startService(mIntent);
                 Toast.makeText(MenuActivity.this, "Started", Toast.LENGTH_SHORT).show();
-
             }
         });
     }

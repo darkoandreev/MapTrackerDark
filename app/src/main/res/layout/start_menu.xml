@@ -12,7 +12,7 @@
         android:layout_gravity="center"
         android:text="Start tracking"
         android:layout_marginTop="50dp"
-        android:background="#F08080"
+        android:background="@drawable/input_background"
         android:textStyle="bold"/>
 
     <Button
@@ -22,7 +22,7 @@
         android:layout_gravity="center"
         android:text="View map"
         android:layout_marginTop="50dp"
-        android:background="#008000"
+        android:background="@drawable/view_map_background"
         android:textStyle="bold"/>
 
     <Button
@@ -32,7 +32,7 @@
         android:layout_gravity="center"
         android:text="Stop tracking"
         android:layout_marginTop="50dp"
-        android:background="#FFF0"
+        android:background="@drawable/stop_tracking_background"
         android:textStyle="bold"/>
 
     <Button
@@ -42,7 +42,7 @@
         android:layout_gravity="center"
         android:text="Show database"
         android:layout_marginTop="50dp"
-        android:background="#800080"
+        android:background="@drawable/show_database_background"
         android:textStyle="bold"/>
 
     <Button
@@ -52,7 +52,7 @@
         android:layout_gravity="center"
         android:text="Clear database"
         android:layout_marginTop="50dp"
-        android:background="#DA180D"
+        android:background="@drawable/clear_database_background"
         android:textStyle="bold"/>
 
 </LinearLayout>
