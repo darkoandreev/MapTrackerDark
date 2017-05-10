@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Tracker App</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="app_name">Tracking App</string>
+    <string name="title_activity_maps">Tracking App</string>
 </resources>

@@ -17,7 +17,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +30,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.maps.android.SphericalUtil;
 
 import java.util.ArrayList;
 
@@ -73,9 +71,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         ///////////////
 
-        showDistance = (TextView) findViewById(R.id.show_distance_time);
-        showSpeed = (TextView) findViewById(R.id.show_speed);
-        showDb = (Button) findViewById(R.id.showData);
+      //  showDistance = (TextView) findViewById(R.id.show_distance_time);
+        //showSpeed = (TextView) findViewById(R.id.show_speed);
+        //showDb = (Button) findViewById(R.id.showData);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         mo = new MarkerOptions().position(new LatLng(0, 0)).title("My Current Location");
@@ -125,20 +123,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
 
         marker.setPosition(myCoordinates);
-
-        final double distance = SphericalUtil.computeLength(points);
-        String DISTANCE = String.valueOf(distance);
-
-        Button calcuate = (Button) findViewById(R.id.btnCalculate);
-
-        calcuate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDistance.setText("Distance: " + distance + " meters");
-                String DISTANCE = showDistance.getText().toString();
-            }
-
-        });
 
     }
 
