@@ -10,6 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
+
 /**
  * Created by darko.andreev on 5/2/2017.
  */
@@ -39,19 +43,41 @@ public class MenuActivity extends AppCompatActivity {
 
     public void openActivity() {
         viewMapButton = (Button) findViewById(R.id.map_view);
-
         viewMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent intent = new Intent(MenuActivity.this, MapsActivity.class);
-                startActivity(intent);
+                ArrayList<LatLng> points;
+                points = getLatLngFromDb();
+                if (points != null && points.size() > 0) {
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList("pbundle", points);
+                    Intent intent = new Intent(MenuActivity.this, MapsActivity.class);
+                    intent.putExtra("points", bundle);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(MenuActivity.this, "No record in DB", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
     }
 
-    public void startTrackingActivity () {
+    private ArrayList<LatLng> getLatLngFromDb() {
+        Cursor res = myDB.getAllData();
+        if (res.getCount() == 0) {
+            showMessage("Error", "Nothing found");
+            return null;
+        }
+        ArrayList<LatLng> list = new ArrayList<>();
+        while (res.moveToNext()) {
+            //Getting Latitude and longitude from DB and creating new LatLng object using them
+            // and finally adding them to list
+            list.add(new LatLng(Double.parseDouble(res.getString(2)), Double.parseDouble(res.getString(3))));
+        }
+        return list;
+    }
+
+    public void startTrackingActivity() {
         startTrackingButton = (Button) findViewById(R.id.start_tracking);
 
         startTrackingButton.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +95,7 @@ public class MenuActivity extends AppCompatActivity {
     }
 
 
-    public void stopTracking () {
+    public void stopTracking() {
         stopTrackingButton = (Button) findViewById(R.id.stop_tracking);
 
         stopTrackingButton.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +106,7 @@ public class MenuActivity extends AppCompatActivity {
         });
     }
 
-    public void viewAllFromDb () {
+    public void viewAllFromDb() {
 
         showDatabase = (Button) findViewById(R.id.show_database);
         showDatabase.setOnClickListener(new View.OnClickListener() {
@@ -92,14 +118,14 @@ public class MenuActivity extends AppCompatActivity {
 
     }
 
-    public void deleteAllFromDb () {
+    public void deleteAllFromDb() {
         deleteDatabase = (Button) findViewById(R.id.clear_database);
 
         deleteDatabase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    myDB.deleteAll();
-                    Toast.makeText(MenuActivity.this, "Records are deleted", Toast.LENGTH_SHORT).show();
+                myDB.deleteAll();
+                Toast.makeText(MenuActivity.this, "Records are deleted", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -135,5 +161,4 @@ public class MenuActivity extends AppCompatActivity {
         builder.setMessage(message);
         builder.show();
     }
-
 }

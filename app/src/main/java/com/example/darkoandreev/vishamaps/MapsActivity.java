@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
@@ -21,6 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -37,6 +37,7 @@ import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
 
+
     final static int PERMISSION_ALL = 1;
     final static String[] PERMISSIONS = {android.Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION};
@@ -51,9 +52,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     TextView showSpeed;
     TrackerDatabase myDB;
     Button showDb;
-
-
-
+    ArrayList<LatLng> pointsFromDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +64,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         myDB = new TrackerDatabase(this);
 
+        //NEW CODE
+        Intent intent = getIntent();
+        pointsFromDB = new ArrayList();
+        if(intent != null){
+            Bundle bundle = intent.getBundleExtra("points");
+            pointsFromDB = bundle.getParcelableArrayList("pbundle");
+        }
+        ///////////////
+
         showDistance = (TextView) findViewById(R.id.show_distance_time);
         showSpeed = (TextView) findViewById(R.id.show_speed);
         showDb = (Button) findViewById(R.id.showData);
@@ -72,8 +80,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         mo = new MarkerOptions().position(new LatLng(0, 0)).title("My Current Location");
 
-        points = new ArrayList<LatLng>();
-
+        points = new ArrayList<>();
 
 
         if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()) {
@@ -85,13 +92,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         marker = mMap.addMarker(mo);
 
+        //New CODE To ADD POLYLINES
+        Polyline lines = mMap.addPolyline(new PolylineOptions().width(3).color(Color.RED));
+        lines.setPoints(pointsFromDB);
+
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng clickCoords) {
+                Log.e("TAG", "Found @ " + clickCoords.latitude + " " + clickCoords.longitude);
+                Toast.makeText(MapsActivity.this, "Latitude: " + clickCoords.latitude + "\n" + "Longitude: " + clickCoords.longitude, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -105,23 +122,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         marker.setPosition(myCoordinates);
 
-        redrawLine();
-
         final double distance = SphericalUtil.computeLength(points);
         String DISTANCE = String.valueOf(distance);
-
-        int speed = 0;
-
-        if(location == null) {
-            showDistance.setText("0.00km/h");
-        } else {
-            speed = (int) (location.getSpeed()*3600/1000);
-
-        }
-        final int finalSpeed = speed;
-        String SPEED = String.valueOf(finalSpeed);
-
-        showSpeed.setText(finalSpeed + " km/h");
 
         Button calcuate = (Button) findViewById(R.id.btnCalculate);
 
@@ -130,33 +132,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 showDistance.setText("Distance: " + distance + " meters");
-
                 String DISTANCE = showDistance.getText().toString();
-                String SPEED = showSpeed.getText().toString();
-
-
             }
 
         });
 
     }
 
-
-
-    private void redrawLine(){
-
+    /*
+    private void redrawLine() {
         //mMap.clear();  //clears all Markers and Polylines
-        points = new ArrayList<LatLng>();
         Cursor locationCursor = myDB.getLatLng();
         locationCursor.moveToFirst();
         Log.v("CURSOR----", locationCursor.toString());
 
         do {
 
-            Double latitude =  (locationCursor.getDouble(locationCursor
+            Double latitude = (locationCursor.getDouble(locationCursor
                     .getColumnIndex("LATITUDE")));
             Log.v("Latitude from db----", String.valueOf(latitude));
-            Double longitude =  (locationCursor.getDouble(locationCursor
+            Double longitude = (locationCursor.getDouble(locationCursor
                     .getColumnIndex("LONGITUDE")));
             Log.v("Longitude from db----", String.valueOf(longitude));
 
@@ -173,6 +168,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         line = mMap.addPolyline(options); //add Polyline
 
     }
+    */
 
 
     @Override
@@ -193,7 +189,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void requestLocation() {
         Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setAccuracy(Criteria.ACCURACY_HIGH);
         criteria.setPowerRequirement(Criteria.POWER_HIGH);
         String provider = locationManager.getBestProvider(criteria, true);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -207,54 +203,55 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean isLocationEnabled() {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        }
+    }
 
-        @RequiresApi(api = Build.VERSION_CODES.M)
-        private boolean isPermissionGranted() {
-            if (checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED || checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Log.v("mylog", "Permission is granted");
-                return true;
-            } else {
-                Log.v("mylog", "Permission not granted");
-                return false;
-            }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean isPermissionGranted() {
+        if (checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED || checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            Log.v("mylog", "Permission is granted");
+            return true;
+        } else {
+            Log.v("mylog", "Permission not granted");
+            return false;
         }
-        private void showAlert(final int status) {
-            String message, title, btnText;
-            if (status == 1) {
-                message = "Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
-                        "use this app";
-                title = "Enable Location";
-                btnText = "Location Settings";
-            } else {
-                message = "Please allow this app to access location!";
-                title = "Permission access";
-                btnText = "Grant";
-            }
-            final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setCancelable(false);
-            dialog.setTitle(title)
-                    .setMessage(message)
-                    .setPositiveButton(btnText, new DialogInterface.OnClickListener() {
-                        @RequiresApi(api = Build.VERSION_CODES.M)
-                        @Override
-                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                            if (status == 1) {
-                                Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivity(myIntent);
-                            } else
-                                requestPermissions(PERMISSIONS, PERMISSION_ALL);
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                            finish();
-                        }
-                    });
-            dialog.show();
+    }
+
+    private void showAlert(final int status) {
+        String message, title, btnText;
+        if (status == 1) {
+            message = "Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
+                    "use this app";
+            title = "Enable Location";
+            btnText = "Location Settings";
+        } else {
+            message = "Please allow this app to access location!";
+            title = "Permission access";
+            btnText = "Grant";
         }
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setCancelable(false);
+        dialog.setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(btnText, new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.M)
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        if (status == 1) {
+                            Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(myIntent);
+                        } else
+                            requestPermissions(PERMISSIONS, PERMISSION_ALL);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        finish();
+                    }
+                });
+        dialog.show();
+    }
 
 }
