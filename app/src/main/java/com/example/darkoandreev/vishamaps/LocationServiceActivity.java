@@ -31,7 +31,7 @@ public class LocationServiceActivity extends Service {
     public Location previousBestLocation = null;
     TrackerDatabase myDB;
     Intent intent;
-
+    private static final float SMALLEST_DISPLACEMENT = 0.25F;
 
     @Override
     public void onCreate() {
@@ -42,6 +42,7 @@ public class LocationServiceActivity extends Service {
         myDB = new TrackerDatabase(this);
 
     }
+
 
 
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -55,7 +56,7 @@ public class LocationServiceActivity extends Service {
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setPowerRequirement(Criteria.POWER_HIGH);
         String provider = locationManager.getBestProvider(criteria, true);
-        locationManager.requestLocationUpdates(provider, 4000, 10, listener);
+        locationManager.requestLocationUpdates(provider, 4000, SMALLEST_DISPLACEMENT, listener);
         return Service.START_STICKY;
     }
 
@@ -117,7 +118,6 @@ public class LocationServiceActivity extends Service {
         }
         return false;
 }
-
 
     /**
      * Checks whether two providers are the same
@@ -187,8 +187,6 @@ public class LocationServiceActivity extends Service {
         public void onProviderEnabled(String provider) {
             Toast.makeText(getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
         }
-
-
 
     }
 }

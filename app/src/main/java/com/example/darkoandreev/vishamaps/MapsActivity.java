@@ -14,11 +14,11 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.TextView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -33,7 +33,11 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
+/**
+ * Created by darko.andreev on 4/27/2017.
+ */
+
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
 
 
     final static int PERMISSION_ALL = 1;
@@ -44,12 +48,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Marker marker;
     LocationManager locationManager;
     private ArrayList<LatLng> points;
-    Polyline line;
     private static final float SMALLEST_DISPLACEMENT = 0.25F;
-    TextView showDistance;
-    TextView showSpeed;
     TrackerDatabase myDB;
-    Button showDb;
     ArrayList<LatLng> pointsFromDB;
 
     @Override
@@ -70,10 +70,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             pointsFromDB = bundle.getParcelableArrayList("pbundle");
         }
         ///////////////
-
-      //  showDistance = (TextView) findViewById(R.id.show_distance_time);
-        //showSpeed = (TextView) findViewById(R.id.show_speed);
-        //showDb = (Button) findViewById(R.id.showData);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         mo = new MarkerOptions().position(new LatLng(0, 0)).title("My Current Location");
@@ -183,7 +179,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             return;
         }
-        locationManager.requestLocationUpdates(provider, 10000, SMALLEST_DISPLACEMENT, this);
+       locationManager.requestLocationUpdates(provider, 10000, SMALLEST_DISPLACEMENT, this);
     }
 
 
@@ -239,6 +235,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 });
         dialog.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.map_type, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.maptypeHYBRID:
+                if(mMap != null){
+                    mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                    return true;
+                }
+            case R.id.maptypeNONE:
+                if(mMap != null){
+                    mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+                    return true;
+                }
+            case R.id.maptypeNORMAL:
+                if(mMap != null){
+                    mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                    return true;
+                }
+            case R.id.maptypeSATELLITE:
+                if(mMap != null){
+                    mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                    return true;
+                }
+            case R.id.maptypeTERRAIN:
+                if(mMap != null){
+                    mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                    return true;
+                }
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

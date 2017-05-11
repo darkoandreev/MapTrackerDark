@@ -21,8 +21,8 @@ public class TrackerDatabase extends SQLiteOpenHelper {
     public static final String TIME = "time";
     public static final String DATABASE_NAME = "newTrackerDatabase";
     public static final String TABLE_NAME = "newTrackerTable";
-
     public static final int DATABASE_VERSION = 1;
+
     public static final String CREATE_QUERY = "CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, SPEED DOUBLE, LATITUDE DOUBLE, LONGITUDE DOUBLE, TIME TEXT);";
 
     public TrackerDatabase(Context context) {
@@ -73,13 +73,6 @@ public class TrackerDatabase extends SQLiteOpenHelper {
         return res;
     }
 
-    public Cursor getLatLng() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String [] columns = new String [] {LATITUDE, LONGITUDE};
-        Cursor res = db.query(TABLE_NAME, columns, null, null, null, null, null);
-
-        return res;
-    }
 
     public void deleteAll()
     {
