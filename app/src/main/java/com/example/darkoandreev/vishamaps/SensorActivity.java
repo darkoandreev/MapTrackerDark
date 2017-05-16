@@ -1,7 +1,7 @@
 package com.example.darkoandreev.vishamaps;
 
 /**
- * Created by darko.andreev on 5/15/2017.
+ * Created by dark on 5/15/2017.
  */
 
 import android.app.ActivityManager;
@@ -20,12 +20,12 @@ import android.widget.Toast;
 public class SensorActivity extends Service implements SensorEventListener {
 
 
-    public SensorManager sm;
-    Intent mIntent;
-    TrackerDatabase myDB;
-    long lastUpdate;
-    static int ACCE_FILTER_DATA_MIN_TIME = 1000;
-    long lastSaved = System.currentTimeMillis();
+    private SensorManager sm;
+    private Intent mIntent;
+    private TrackerDatabase myDB;
+    private long lastUpdate;
+    private static int ACCE_FILTER_DATA_MIN_TIME = 1000;
+    private long lastSaved = System.currentTimeMillis();
 
 
     @Override
@@ -40,12 +40,11 @@ public class SensorActivity extends Service implements SensorEventListener {
 
     }
 
-    @Override//
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
         sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         //registering Sensor
-        Sensor sensor = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         sm.registerListener(this,
                 sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
@@ -104,10 +103,7 @@ public class SensorActivity extends Service implements SensorEventListener {
 
             lastUpdate = actualTime;
 
-            // Perform your Action Here..
-
         }
-
 
         mIntent.putExtra("X", x);
         mIntent.putExtra("Y", y);

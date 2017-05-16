@@ -34,7 +34,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.util.ArrayList;
 
 /**
- * Created by darko.andreev on 4/27/2017.
+ * Created by dark on 4/27/2017.
  */
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
@@ -44,13 +44,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     final static String[] PERMISSIONS = {android.Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION};
     private GoogleMap mMap;
-    MarkerOptions mo;
-    Marker marker;
-    LocationManager locationManager;
+    private MarkerOptions mo;
+    private Marker marker;
+    private LocationManager locationManager;
     private ArrayList<LatLng> points;
     private static final float SMALLEST_DISPLACEMENT = 0.25F;
-    TrackerDatabase myDB;
-    ArrayList<LatLng> pointsFromDB;
+    private TrackerDatabase myDB;
+    private ArrayList<LatLng> pointsFromDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +62,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         myDB = new TrackerDatabase(this);
 
-        //NEW CODE
         Intent intent = getIntent();
         pointsFromDB = new ArrayList();
         if(intent != null){
             Bundle bundle = intent.getBundleExtra("points");
             pointsFromDB = bundle.getParcelableArrayList("pbundle");
         }
-        ///////////////
+
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         mo = new MarkerOptions().position(new LatLng(0, 0)).title("My Current Location");
@@ -92,7 +91,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         marker = mMap.addMarker(mo);
 
-        //New CODE To ADD POLYLINES
         final Polyline lines = mMap.addPolyline(new PolylineOptions().width(3).color(Color.RED));
         lines.setPoints(pointsFromDB);
 

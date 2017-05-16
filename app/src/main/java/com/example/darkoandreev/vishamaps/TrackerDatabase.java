@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /**
- * Created by darko.andreev on 4/27/2017.
+ * Created by dark on 4/27/2017.
  */
 
 public class TrackerDatabase extends SQLiteOpenHelper {

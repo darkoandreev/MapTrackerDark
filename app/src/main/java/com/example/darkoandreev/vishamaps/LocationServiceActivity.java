@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by darko.andreev on 5/3/2017.
+ * Created by dark on 5/3/2017.
  */
 
 public class LocationServiceActivity extends Service {
@@ -29,8 +29,8 @@ public class LocationServiceActivity extends Service {
     public LocationManager locationManager;
     public MyLocationListener listener;
     public Location previousBestLocation = null;
-    TrackerDatabase myDB;
-    Intent intent;
+    private TrackerDatabase myDB;
+    private Intent intent;
     private static final float SMALLEST_DISPLACEMENT = 0.25F;
 
     @Override

@@ -24,7 +24,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 
 /**
- * Created by darko.andreev on 5/2/2017.
+ * Created by dark on 5/2/2017.
  */
 
 public class MenuActivity extends AppCompatActivity {
@@ -34,13 +34,12 @@ public class MenuActivity extends AppCompatActivity {
     private Button startTrackingButton;
     private Button showDatabase;
     private Button deleteDatabase;
-    SensorManager sm;
-    TrackerDatabase myDB;
-    Intent mIntent, nIntent;
-    LocationManager locationManager;
-    SensorActivity sa;
-    final static int PERMISSION_ALL = 1;
-    final static String[] PERMISSIONS = {android.Manifest.permission.ACCESS_COARSE_LOCATION,
+    private SensorManager sm;
+    private TrackerDatabase myDB;
+    private Intent mIntent, nIntent;
+    private LocationManager locationManager;
+    private final static int PERMISSION_ALL = 1;
+    private final static String[] PERMISSIONS = {android.Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION};
 
 
