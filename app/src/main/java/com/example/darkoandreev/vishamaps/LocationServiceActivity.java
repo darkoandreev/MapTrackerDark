@@ -56,7 +56,7 @@ public class LocationServiceActivity extends Service {
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setPowerRequirement(Criteria.POWER_HIGH);
         String provider = locationManager.getBestProvider(criteria, true);
-        locationManager.requestLocationUpdates(provider, 4000, SMALLEST_DISPLACEMENT, listener);
+        locationManager.requestLocationUpdates(provider, 5000, SMALLEST_DISPLACEMENT, listener);
         return Service.START_STICKY;
     }
 
@@ -165,7 +165,7 @@ public class LocationServiceActivity extends Service {
                 Toast.makeText(LocationServiceActivity.this, "Location changed", Toast.LENGTH_LONG).show();
 
 
-                boolean isInserted = myDB.insertData(String.valueOf(speed), loc.getLatitude(), loc.getLongitude(), String.valueOf(sdf.format(resultdate)));
+                boolean isInserted = myDB.insertLocationData(String.valueOf(speed), loc.getLatitude(), loc.getLongitude(), String.valueOf(sdf.format(resultdate)));
                 if (isInserted == true) {
                     Toast.makeText(LocationServiceActivity.this, "Data inserted", Toast.LENGTH_LONG).show();
                 } else {

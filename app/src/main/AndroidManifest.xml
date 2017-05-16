@@ -44,6 +44,7 @@
         </activity>
 
         <service android:enabled="true" android:name="com.example.darkoandreev.vishamaps.LocationServiceActivity" />
+        <service android:enabled="true" android:exported="true" android:name="com.example.darkoandreev.vishamaps.SensorActivity" />
     </application>
 
 

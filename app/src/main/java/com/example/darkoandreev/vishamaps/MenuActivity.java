@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.hardware.SensorManager;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,19 +34,22 @@ public class MenuActivity extends AppCompatActivity {
     private Button startTrackingButton;
     private Button showDatabase;
     private Button deleteDatabase;
+    SensorManager sm;
     TrackerDatabase myDB;
-    Intent mIntent;
+    Intent mIntent, nIntent;
     LocationManager locationManager;
+    SensorActivity sa;
     final static int PERMISSION_ALL = 1;
     final static String[] PERMISSIONS = {android.Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION};
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start_menu);
         myDB = new TrackerDatabase(this);
-
+        sm = (SensorManager) getSystemService(SENSOR_SERVICE);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()) {
             requestPermissions(PERMISSIONS, PERMISSION_ALL);
@@ -172,10 +176,16 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mIntent = new Intent(MenuActivity.this, LocationServiceActivity.class);
+                nIntent = new Intent (MenuActivity.this, SensorActivity.class);
                 Bundle extras = mIntent.getExtras();
                 Bundle mBundle = new Bundle();
+                Bundle nBundle = new Bundle();
                 mIntent.putExtras(mBundle);
+                nIntent.putExtras(nBundle);
                 startService(mIntent);
+                startService(nIntent);
+                //sa.startSensor();
+
                 Toast.makeText(MenuActivity.this, "Started", Toast.LENGTH_SHORT).show();
             }
         });
@@ -188,7 +198,10 @@ public class MenuActivity extends AppCompatActivity {
         stopTrackingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+               // sa.stopSensor();
                 stopService(new Intent(MenuActivity.this, LocationServiceActivity.class));
+                stopService(new Intent(MenuActivity.this, SensorActivity.class));
+
             }
         });
     }
@@ -220,20 +233,25 @@ public class MenuActivity extends AppCompatActivity {
     public void viewAll() {
 
         Cursor res = myDB.getAllData();
-        if (res.getCount() == 0) {
+        Cursor res2 = myDB.getSensorData();
+        if ((res.getCount() == 0) && (res2.getCount() == 0)){
 
             showMessage("Errorr", "Nothing found");
             return;
         }
 
         StringBuffer buffer = new StringBuffer();
-        while (res.moveToNext()) {
+        while (res.moveToNext() && res2.moveToNext()) {
 
             buffer.append("Id: " + res.getString(0) + "\n");
             buffer.append("Speed: " + res.getString(1) + "\n");
             buffer.append("Latitude: " + res.getString(2) + "\n");
             buffer.append("Longitude: " + res.getString(3) + "\n");
-            buffer.append("Time: " + res.getString(4) + "\n\n");
+            buffer.append("Time: " + res.getString(4) + "\n");
+            buffer.append("X: " + res2.getString(1) + "\n");
+            buffer.append("Y: " + res2.getString(2) + "\n");
+            buffer.append("Z: " + res2.getString(3) + "\n");
+            buffer.append("Acceleration: " + res2.getString(4) + "\n\n");
 
         }
 

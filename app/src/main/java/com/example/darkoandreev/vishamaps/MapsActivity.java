@@ -122,37 +122,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    /*
-    private void redrawLine() {
-        //mMap.clear();  //clears all Markers and Polylines
-        Cursor locationCursor = myDB.getLatLng();
-        locationCursor.moveToFirst();
-        Log.v("CURSOR----", locationCursor.toString());
-
-        do {
-
-            Double latitude = (locationCursor.getDouble(locationCursor
-                    .getColumnIndex("LATITUDE")));
-            Log.v("Latitude from db----", String.valueOf(latitude));
-            Double longitude = (locationCursor.getDouble(locationCursor
-                    .getColumnIndex("LONGITUDE")));
-            Log.v("Longitude from db----", String.valueOf(longitude));
-
-            points.add(new LatLng(latitude, longitude));
-            Log.v("POINTS------", String.valueOf(points));
-        } while (locationCursor.moveToNext());
-        PolylineOptions options = new PolylineOptions().width(5).color(Color.RED).geodesic(true);
-
-        for (int i = 0; i < points.size(); i++) {
-            LatLng point = points.get(i);
-            options.add(point);
-        }
-
-        line = mMap.addPolyline(options); //add Polyline
-
-    }
-    */
-
 
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
@@ -179,7 +148,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             return;
         }
-       locationManager.requestLocationUpdates(provider, 10000, SMALLEST_DISPLACEMENT, this);
+       locationManager.requestLocationUpdates(provider, 5000, SMALLEST_DISPLACEMENT, this);
     }
 
 

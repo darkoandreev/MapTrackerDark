@@ -13,17 +13,38 @@ import android.util.Log;
 
 public class TrackerDatabase extends SQLiteOpenHelper {
 
+    public static final String DATABASE_NAME = "NewestTrackerDatabase";
+    public static final int DATABASE_VERSION = 1;
 
+    //-------- LOCATION TABLE -----------//
+    public static final String LOCATION_TABLE = "location";
     public static String SPEED = "SPEED";
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";
     public static final String ID = "ID";
     public static final String TIME = "time";
-    public static final String DATABASE_NAME = "newTrackerDatabase";
-    public static final String TABLE_NAME = "newTrackerTable";
-    public static final int DATABASE_VERSION = 1;
+    //--------------------------------//
 
-    public static final String CREATE_QUERY = "CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, SPEED DOUBLE, LATITUDE DOUBLE, LONGITUDE DOUBLE, TIME TEXT);";
+
+    //-------- ACCELEROMETER TABLE -----------//
+    public static final String ACCELEROMETER_TABLE = "sensors";
+    public static final String CURRENT_X = "currentX";
+    public static final String CURRENT_Y = "currentY";
+    public static final String CURRENT_Z = "currentZ";
+    public static final String ACCELERATION = "acceleration";
+    //-------------------------------------//
+
+    //-------- TRAVEL TABLE -----------//
+    public static final String TRAVEL_TABLE = "travel";
+    public static final String DESCRIPTION = "description";
+    public static final String START_TIME = "startTime";
+    //--------------------------------//
+
+
+    public static final String CREATE_LOCATION_TABLE = "CREATE TABLE " + LOCATION_TABLE + " (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, SPEED DOUBLE, LATITUDE DOUBLE, LONGITUDE DOUBLE, TIME TEXT);";
+    public static final String CREATE_ACCELEROMETER_TABLE = "CREATE TABLE " + ACCELEROMETER_TABLE + " (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, currentX DOUBLE, currentY DOUBLE, currentZ DOUBLE, acceleration DOUBLE);";
+    public static final String CREATE_TRAVEL_TABLE = "CREATE TABLE " + TRAVEL_TABLE + " (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, DESCRIPTION TEXT, START_TIME TEXT);";
+
 
     public TrackerDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -34,7 +55,8 @@ public class TrackerDatabase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL(CREATE_QUERY);
+        db.execSQL(CREATE_LOCATION_TABLE);
+        db.execSQL(CREATE_ACCELEROMETER_TABLE);
         Log.d("Database operations", "Table created");
 
     }
@@ -42,23 +64,58 @@ public class TrackerDatabase extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + LOCATION_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + CREATE_ACCELEROMETER_TABLE);
         onCreate(db);
 
     }
 
-    public boolean insertData(String speed, double latitude, double longitude, String time) {
+    public boolean insertLocationData(String speed, double latitude, double longitude, String time) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues cv = new ContentValues();
+
         cv.put(SPEED, speed);
         cv.put(LATITUDE, latitude);
         cv.put(LONGITUDE, longitude);
         cv.put(TIME, time);
 
+        long result = db.insert(LOCATION_TABLE, null, cv);
 
-        long result = db.insert(TABLE_NAME, null, cv);
+        if (result == -1)
+            return false;
+        else
+            return true;
+    }
+
+    public boolean insertTravelData (String description, String startTime) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+
+        cv.put(DESCRIPTION, description);
+        cv.put(START_TIME, startTime);
+
+        long result = db.insert(TRAVEL_TABLE, null, cv);
+
+        if (result == -1)
+            return false;
+        else
+            return true;
+    }
+
+    public boolean insertSensorData (double currentX, double currentY, double currentZ, double acceleration) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+
+        cv.put(CURRENT_X, currentX);
+        cv.put(CURRENT_Y, currentY);
+        cv.put(CURRENT_Z, currentZ);
+        cv.put(ACCELERATION, acceleration);
+
+        long result = db.insert(ACCELEROMETER_TABLE, null, cv);
 
         if (result == -1)
             return false;
@@ -68,7 +125,14 @@ public class TrackerDatabase extends SQLiteOpenHelper {
 
     public Cursor getAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        Cursor res = db.rawQuery("SELECT * FROM " + LOCATION_TABLE, null);
+
+        return res;
+    }
+
+    public Cursor getSensorData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + ACCELEROMETER_TABLE, null);
 
         return res;
     }
@@ -77,8 +141,9 @@ public class TrackerDatabase extends SQLiteOpenHelper {
     public void deleteAll()
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("delete from sqlite_sequence where name = 'newTrackerTable'");
-        db.execSQL("delete from " + TABLE_NAME);
+        db.execSQL("delete from sqlite_sequence where name = 'location' OR name = 'sensors'");
+        db.execSQL("delete from " + LOCATION_TABLE);
+        db.execSQL("delete from " + ACCELEROMETER_TABLE);
         db.close();
     }
 
