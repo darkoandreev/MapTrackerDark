@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark">
+    android:background="@drawable/background_image">
 
 
     <Button
@@ -12,7 +12,8 @@
         android:layout_gravity="center"
         android:text="Start tracking"
         android:layout_marginTop="50dp"
-        android:background="@drawable/input_background"
+        android:background="@drawable/start_tracking_background"
+        android:alpha="0.50"
         android:textStyle="bold"/>
 
     <Button
@@ -23,6 +24,7 @@
         android:text="View map"
         android:layout_marginTop="50dp"
         android:background="@drawable/view_map_background"
+        android:alpha="0.50"
         android:textStyle="bold"/>
 
     <Button
@@ -33,6 +35,7 @@
         android:text="Stop tracking"
         android:layout_marginTop="50dp"
         android:background="@drawable/stop_tracking_background"
+        android:alpha="0.50"
         android:textStyle="bold"/>
 
     <Button
@@ -43,6 +46,7 @@
         android:text="Show database"
         android:layout_marginTop="50dp"
         android:background="@drawable/show_database_background"
+        android:alpha="0.50"
         android:textStyle="bold"/>
 
     <Button
@@ -50,9 +54,10 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Clear database"
         android:layout_marginTop="50dp"
+        android:alpha="0.50"
         android:background="@drawable/clear_database_background"
-        android:textStyle="bold"/>
+        android:text="Clear database"
+        android:textStyle="bold" />
 
 </LinearLayout>

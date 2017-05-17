@@ -71,7 +71,7 @@ public class SensorActivity extends Service implements SensorEventListener {
         if ((System.currentTimeMillis() - lastSaved) > ACCE_FILTER_DATA_MIN_TIME) {
 
             getAccelerometer(event);
-            Toast.makeText(SensorActivity.this, "Sensor changed", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(SensorActivity.this, "Sensor changed", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -113,9 +113,9 @@ public class SensorActivity extends Service implements SensorEventListener {
 
         boolean isInserted = myDB.insertSensorData(x, y, z, accelationSquareRoot);
         if (isInserted == true) {
-            Toast.makeText(SensorActivity.this, "Sensor data inserted", Toast.LENGTH_LONG).show();
+           // Toast.makeText(SensorActivity.this, "Sensor data inserted", Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(SensorActivity.this, "Sensor data is NOT inserted", Toast.LENGTH_LONG).show();
+           // Toast.makeText(SensorActivity.this, "Sensor data is NOT inserted", Toast.LENGTH_LONG).show();
         }
 
     }

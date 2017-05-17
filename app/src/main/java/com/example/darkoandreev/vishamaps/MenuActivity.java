@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -174,6 +175,7 @@ public class MenuActivity extends AppCompatActivity {
         startTrackingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showTravelDescription();
                 mIntent = new Intent(MenuActivity.this, LocationServiceActivity.class);
                 nIntent = new Intent (MenuActivity.this, SensorActivity.class);
                 Bundle extras = mIntent.getExtras();
@@ -183,7 +185,6 @@ public class MenuActivity extends AppCompatActivity {
                 nIntent.putExtras(nBundle);
                 startService(mIntent);
                 startService(nIntent);
-                //sa.startSensor();
 
                 Toast.makeText(MenuActivity.this, "Started", Toast.LENGTH_SHORT).show();
             }
@@ -233,6 +234,8 @@ public class MenuActivity extends AppCompatActivity {
 
         Cursor res = myDB.getAllData();
         Cursor res2 = myDB.getSensorData();
+        Cursor res3 = myDB.getDescriptionData();
+
         if ((res.getCount() == 0) && (res2.getCount() == 0)){
 
             showMessage("Errorr", "Nothing found");
@@ -240,22 +243,32 @@ public class MenuActivity extends AppCompatActivity {
         }
 
         StringBuffer buffer = new StringBuffer();
-        while (res.moveToNext() && res2.moveToNext()) {
 
-            buffer.append("Id: " + res.getString(0) + "\n");
-            buffer.append("Speed: " + res.getString(1) + "\n");
-            buffer.append("Latitude: " + res.getString(2) + "\n");
-            buffer.append("Longitude: " + res.getString(3) + "\n");
-            buffer.append("Time: " + res.getString(4) + "\n");
-            buffer.append("X: " + res2.getString(1) + "\n");
-            buffer.append("Y: " + res2.getString(2) + "\n");
-            buffer.append("Z: " + res2.getString(3) + "\n");
-            buffer.append("Acceleration: " + res2.getString(4) + "\n\n");
+            while(res3.moveToNext()) {
+
+                buffer.append("------------------------------------------- \n");
+                buffer.append(res3.getString(1) + "\n");
+                buffer.append("------------------------------------------- \n");
+
+                while (res.moveToNext() && res2.moveToNext()) {
+
+                    buffer.append("Id: " + res.getString(0) + "\n");
+                    buffer.append("Speed: " + res.getString(1) + "\n");
+                    buffer.append("Latitude: " + res.getString(2) + "\n");
+                    buffer.append("Longitude: " + res.getString(3) + "\n");
+                    buffer.append("Time: " + res.getString(4) + "\n");
+                    buffer.append("X: " + res2.getString(1) + "\n");
+                    buffer.append("Y: " + res2.getString(2) + "\n");
+                    buffer.append("Z: " + res2.getString(3) + "\n");
+                    buffer.append("Acceleration: " + res2.getString(4) + "\n\n");
+                }
+
+            }
+
+        showMessage("Tracker Database", buffer.toString());
 
         }
 
-        showMessage("Tracker Database", buffer.toString());
-    }
 
     public void showMessage(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -263,5 +276,29 @@ public class MenuActivity extends AppCompatActivity {
         builder.setTitle(title);
         builder.setMessage(message);
         builder.show();
+    }
+
+    public void showTravelDescription () {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View mView = getLayoutInflater().inflate(R.layout.travel_description, null);
+        final EditText travelDescription = (EditText) mView.findViewById(R.id.addTextDescription);
+        Button addButton = (Button) mView.findViewById(R.id.addDescriptionBtn);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                    boolean isInserted = myDB.insertTravelData(travelDescription.getText().toString());
+                    if (isInserted == true) {
+                        Toast.makeText(MenuActivity.this, "Description inserted", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MenuActivity.this, "Description is NOT inserted", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        });
+
+        builder.setView(mView);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
